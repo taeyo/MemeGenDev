@@ -21,7 +21,7 @@ namespace MemeGenWeb.Controllers
         public enum BubblePosition
         {
             TopLeft, TopRight, BottomLeft, BottomRight,
-            TopLeftStar
+            TopLeftStar, TopRightStar, BottomLeftStar
         }
 
         public class BubbleInfo
@@ -52,10 +52,20 @@ namespace MemeGenWeb.Controllers
                     info.ImageName = "bubble-tr.png";
                     info.TextArea = new Rectangle(10, 10, 200, 120);
                     return info;
+                case BubblePosition.TopRightStar:
+                    info.Startpoint = new Point(200, 0);
+                    info.ImageName = "bubble-star2tr.png";
+                    info.TextArea = new Rectangle(70, 0, 200, 140);
+                    return info;
                 case BubblePosition.BottomLeft:
-                    info.Startpoint = new Point(10, 400);
+                    info.Startpoint = new Point(0, 400);
                     info.ImageName = "bubble-bl.png";
                     info.TextArea = new Rectangle(10, 60, 200, 120);
+                    return info;
+                case BubblePosition.BottomLeftStar:
+                    info.Startpoint = new Point(0, 400);
+                    info.ImageName = "bubble-star2bl.png";
+                    info.TextArea = new Rectangle(0, 50, 200, 140);
                     return info;
                 case BubblePosition.BottomRight:
                     info.Startpoint = new Point(200, 400);
@@ -72,7 +82,6 @@ namespace MemeGenWeb.Controllers
 
         public ActionResult About(string t)
         {
-
             // 가정
             // 1. 이미지의 widht 는 400으로 한다. (resize 필요)
             // 2. 버블은 좌,우 및 상,하로 구분한다
@@ -80,7 +89,7 @@ namespace MemeGenWeb.Controllers
             string file = @"C:\Temp\images\tyson.jpg";
             byte[] photoBytes = System.IO.File.ReadAllBytes(file);
 
-            var bubbleInfo = GetBubbleInfo(BubblePosition.TopLeftStar);
+            var bubbleInfo = GetBubbleInfo(BubblePosition.BottomLeftStar);
             
             // Format is automatically detected though can be changed.
             ISupportedImageFormat format = new JpegFormat { Quality = 70 };
@@ -103,7 +112,7 @@ namespace MemeGenWeb.Controllers
             //    }
             //}
 
-            string textDiplay = "한방에 훅간다!";
+            string textDiplay = "한방에 훅간다! 한방에 훅간다한방에 훅간다한방에 훅간다한방에 훅간다한방에 훅간다한방에 훅간다한방에 훅간다";
 
             using (System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(bitmap))
             using (Font font1 = new Font("Segoe UI", 120, FontStyle.Bold, GraphicsUnit.Pixel))
@@ -169,6 +178,8 @@ namespace MemeGenWeb.Controllers
             float WidthScaleRatio = Room.Width / RealSize.Width;
             float ScaleRatio = (HeightScaleRatio < WidthScaleRatio) ? ScaleRatio = HeightScaleRatio : ScaleRatio = WidthScaleRatio;
             float ScaleFontSize = PreferedFont.Size * ScaleRatio;
+
+            if (ScaleFontSize < 12) ScaleFontSize = 12f;
             return new Font(PreferedFont.FontFamily, ScaleFontSize);
         }
 
