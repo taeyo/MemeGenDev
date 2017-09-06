@@ -1,11 +1,17 @@
 ﻿using ImageProcessor;
 using ImageProcessor.Imaging;
+using ImageProcessor.Imaging.Filters.Photo;
 using ImageProcessor.Imaging.Formats;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -22,6 +28,34 @@ namespace MemeGenWeb.Controllers
         {
             TopLeft, TopRight, BottomLeft, BottomRight,
             TopLeftStar, TopRightStar, BottomLeftStar
+        }
+
+        public enum Filter
+        {
+            Comic, Gotham, GreyScale, Lomograph, Polaroid, HiSatch, Sepia
+        }
+
+        public IMatrixFilter GetFilterByName(Filter filter)
+        {
+            switch (filter)
+            {
+                case Filter.Comic:
+                    return MatrixFilters.Comic;
+                case Filter.Gotham:
+                    return MatrixFilters.Gotham;
+                case Filter.GreyScale:
+                    return MatrixFilters.GreyScale;
+                case Filter.Lomograph:
+                    return MatrixFilters.Lomograph;
+                case Filter.Polaroid:
+                    return MatrixFilters.Polaroid;
+                case Filter.HiSatch:
+                    return MatrixFilters.HiSatch;
+                case Filter.Sepia:
+                    return MatrixFilters.Sepia;
+                default:
+                    return MatrixFilters.Lomograph;
+            }
         }
 
         public class BubbleInfo
@@ -65,7 +99,7 @@ namespace MemeGenWeb.Controllers
                 case BubblePosition.BottomLeftStar:
                     info.Startpoint = new Point(0, 400);
                     info.ImageName = "bubble-star2bl.png";
-                    info.TextArea = new Rectangle(0, 50, 200, 140);
+                    info.TextArea = new Rectangle(5, 60, 200, 130);
                     return info;
                 case BubblePosition.BottomRight:
                     info.Startpoint = new Point(200, 400);
@@ -80,22 +114,53 @@ namespace MemeGenWeb.Controllers
             }
         }
 
+        private byte[] ReadBlobInByteArray(string fileName)
+        {
+            var connectionString = ConfigurationManager.AppSettings["AzureWebJobsStorage"];
+            var containerName = ConfigurationManager.AppSettings["BlobContainerName"];
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connectionString);
+
+            // Create the destination blob client
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+            CloudBlobContainer container = blobClient.GetContainerReference(containerName);
+
+            var blob = container.GetBlockBlobReference(fileName);
+            long fileByteLength = blob.StreamWriteSizeInBytes;
+            Byte[] myByteArray = new Byte[fileByteLength];
+
+            try {             
+                blob.DownloadToByteArray(myByteArray, 0);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("a");
+            }
+            return myByteArray;
+        }
+
         public ActionResult About(string t)
         {
+            // BLOB에서 바이너리를 가져오는 메서드
+            string originFileName = "bill.jpg";
+            string targetFileName = "bill-processed.jpg";
+            //byte[] photoBytes = ReadBlobInByteArray(fileName);
+
+            string assetsPath = ConfigurationManager.AppSettings["ASSETS_ROOT"] ?? @"C:\Temp\images\";
+
             // 가정
             // 1. 이미지의 widht 는 400으로 한다. (resize 필요)
             // 2. 버블은 좌,우 및 상,하로 구분한다
-            // 3. 
-            string file = @"C:\Temp\images\tyson.jpg";
+
+            string file = Path.Combine(assetsPath, originFileName);
             byte[] photoBytes = System.IO.File.ReadAllBytes(file);
 
-            var bubbleInfo = GetBubbleInfo(BubblePosition.BottomLeftStar);
+            var bubbleInfo = GetBubbleInfo(BubblePosition.TopLeftStar);
             
             // Format is automatically detected though can be changed.
             ISupportedImageFormat format = new JpegFormat { Quality = 70 };
             //Size size = new Size(150, 0);
-
-            Bitmap bitmap = (Bitmap)Image.FromFile(Path.Combine(@"C:\Temp\images\", bubbleInfo.ImageName));
+            
+            Bitmap bitmap = (Bitmap)Image.FromFile(Path.Combine(assetsPath, bubbleInfo.ImageName));
 
             //string firstText = "내 이름은";
             //string secondText = "빌 게이츠";
@@ -112,7 +177,7 @@ namespace MemeGenWeb.Controllers
             //    }
             //}
 
-            string textDiplay = "한방에 훅간다! 한방에 훅간다한방에 훅간다한방에 훅간다한방에 훅간다한방에 훅간다한방에 훅간다한방에 훅간다";
+            string textDiplay = "I'm Bill";
 
             using (System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(bitmap))
             using (Font font1 = new Font("Segoe UI", 120, FontStyle.Bold, GraphicsUnit.Pixel))
@@ -141,19 +206,24 @@ namespace MemeGenWeb.Controllers
                         //Image img = Image.FromFile(@"C:\Temp\images\bubble-tp.png");
                         ImageLayer layer = new ImageLayer();
                         layer.Image = img;
-                        layer.Opacity = 90;
+                        layer.Opacity = 80;
                         layer.Position = bubbleInfo.Startpoint;
 
+                        //필터 적용?
+                        // Comic, Gotham, GreyScale, Lomograph, Polaroid, HiSatch, Sepia
+                        var filter = MatrixFilters.Lomograph;
+                        
                         // Load, resize, set the format and quality and save an image.
                         imageFactory.Load(inStream)
                                     //.Resize(size)
                                     .Format(format)
+                                    .Filter(filter)
                                     .Overlay(layer)
                                     .Save(outStream);
                     }
 
                     // Do something with the stream.
-                    using (var fileStream = System.IO.File.Create(@"C:\Temp\images\bill2.jpg"))
+                    using (var fileStream = System.IO.File.Create(Path.Combine(assetsPath, targetFileName)))
                     {
                         outStream.Seek(0, SeekOrigin.Begin);
                         outStream.CopyTo(fileStream);
