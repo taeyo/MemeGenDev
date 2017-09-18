@@ -32,15 +32,19 @@ namespace MemeGenWeb.Controllers
 
         public enum Filter
         {
-            Comic, Gotham, GreyScale, Lomograph, Polaroid, HiSatch, Sepia
+            None, BlackWhite, Comic, Gotham, GreyScale, Lomograph, Polaroid, HiSatch, Sepia
         }
 
         public IMatrixFilter GetFilterByName(Filter filter)
         {
             switch (filter)
             {
+                case Filter.None:
+                    return null;
                 case Filter.Comic:
                     return MatrixFilters.Comic;
+                case Filter.BlackWhite:
+                    return MatrixFilters.BlackWhite;
                 case Filter.Gotham:
                     return MatrixFilters.Gotham;
                 case Filter.GreyScale:
@@ -128,10 +132,11 @@ namespace MemeGenWeb.Controllers
             long fileByteLength = blob.StreamWriteSizeInBytes;
             Byte[] myByteArray = new Byte[fileByteLength];
 
-            try {             
+            try
+            {
                 blob.DownloadToByteArray(myByteArray, 0);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("a");
             }
@@ -141,27 +146,55 @@ namespace MemeGenWeb.Controllers
         public ActionResult About(string t)
         {
             // BLOB에서 바이너리를 가져오는 메서드
-            string originFileName = "bill.jpg";
-            string targetFileName = "bill-processed.jpg";
+            string originFileName = "choihun.jpg";
+            string targetFileName = "choihun-Sepia.jpg";
             //byte[] photoBytes = ReadBlobInByteArray(fileName);
 
+            // 필요한 데이터,
+            // 1. BLOB 파일명
+            // 2. 밈 텍스트
+            // 3. 버블 모양
+            // 4. 버블 위치
+
             string assetsPath = ConfigurationManager.AppSettings["ASSETS_ROOT"] ?? @"C:\Temp\images\";
+            string file = Path.Combine(assetsPath, originFileName);
+            byte[] photoBytes = System.IO.File.ReadAllBytes(file);
+
+
+            byte[] outBytes = ImageGenerate(photoBytes);
+
+            //ViewBag.Message = "Your application description page.";
+
+            // Do something with the stream.
+            using (var fileStream = System.IO.File.Create(Path.Combine(assetsPath, targetFileName)))
+            {
+                fileStream.Write(outBytes, 0, outBytes.Length);
+            }
+
+            return View();
+        }
+
+        private byte[] ImageGenerate(byte[] photoBytes)
+        {
+            string assetsPath = ConfigurationManager.AppSettings["ASSETS_ROOT"] ?? @"C:\Temp\images\";
+
+            string textDiplay = "빌 클린턴";
+            //  None, BlackWhite, Comic, Gotham, GreyScale, Lomograph, Polaroid, HiSatch, Sepia
+            IMatrixFilter appliedFilter = MatrixFilters.Sepia;
 
             // 가정
             // 1. 이미지의 widht 는 400으로 한다. (resize 필요)
             // 2. 버블은 좌,우 및 상,하로 구분한다
 
-            string file = Path.Combine(assetsPath, originFileName);
-            byte[] photoBytes = System.IO.File.ReadAllBytes(file);
-
             var bubbleInfo = GetBubbleInfo(BubblePosition.TopLeftStar);
-            
+
             // Format is automatically detected though can be changed.
             ISupportedImageFormat format = new JpegFormat { Quality = 70 };
             //Size size = new Size(150, 0);
-            
+
             Bitmap bitmap = (Bitmap)Image.FromFile(Path.Combine(assetsPath, bubbleInfo.ImageName));
 
+            #region 강제 텍스트 출력예
             //string firstText = "내 이름은";
             //string secondText = "빌 게이츠";
 
@@ -176,8 +209,8 @@ namespace MemeGenWeb.Controllers
             //        graphics.DrawString(secondText, arialFont, Brushes.Black, secondLocation);
             //    }
             //}
+            #endregion
 
-            string textDiplay = "I'm Bill";
 
             using (System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(bitmap))
             using (Font font1 = new Font("Segoe UI", 120, FontStyle.Bold, GraphicsUnit.Pixel))
@@ -211,36 +244,38 @@ namespace MemeGenWeb.Controllers
 
                         //필터 적용?
                         // Comic, Gotham, GreyScale, Lomograph, Polaroid, HiSatch, Sepia
-                        var filter = MatrixFilters.Lomograph;
-                        
+                        var filter = appliedFilter;
+
                         // Load, resize, set the format and quality and save an image.
-                        imageFactory.Load(inStream)
-                                    //.Resize(size)
-                                    .Format(format)
-                                    .Filter(filter)
-                                    .Overlay(layer)
-                                    .Save(outStream);
+                        var factory = imageFactory.Load(inStream)
+                                                //.Resize(size)
+                                                .Format(format);
+
+                        if (appliedFilter != null)
+                            factory.Filter(filter);
+
+                        factory
+                            .Overlay(layer)
+                            .Save(outStream);
                     }
 
-                    // Do something with the stream.
-                    using (var fileStream = System.IO.File.Create(Path.Combine(assetsPath, targetFileName)))
-                    {
-                        outStream.Seek(0, SeekOrigin.Begin);
-                        outStream.CopyTo(fileStream);
-                    }
+                    return outStream.ToArray();
+
+                    //// Do something with the stream.
+                    //using (var fileStream = System.IO.File.Create(Path.Combine(assetsPath, targetFileName)))
+                    //{
+                    //    outStream.Seek(0, SeekOrigin.Begin);
+                    //    outStream.CopyTo(fileStream);
+                    //}
                 }
             }
-
-            //ViewBag.Message = "Your application description page.";
-
-            return View();
         }
 
         private Font FindFont(System.Drawing.Graphics g, string longString, Size Room, Font PreferedFont)
         {
             //you should perform some scale functions!!!
             SizeF RealSize = g.MeasureString(longString, PreferedFont);
-            
+
             //font 길이 보정
             RealSize.Width += 150;
 
