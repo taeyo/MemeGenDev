@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MemeGen", "MemeGen\MemeGen.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemeGenWeb", "MemeGenWeb\MemeGenWeb.csproj", "{22108D44-D569-4648-BD69-B3BA3F1CC5EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueConsole", "QueueConsole\QueueConsole.csproj", "{310CDEC3-E912-43D8-ABC5-7B35A6B3216A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{22108D44-D569-4648-BD69-B3BA3F1CC5EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22108D44-D569-4648-BD69-B3BA3F1CC5EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22108D44-D569-4648-BD69-B3BA3F1CC5EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{310CDEC3-E912-43D8-ABC5-7B35A6B3216A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{310CDEC3-E912-43D8-ABC5-7B35A6B3216A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{310CDEC3-E912-43D8-ABC5-7B35A6B3216A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{310CDEC3-E912-43D8-ABC5-7B35A6B3216A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
