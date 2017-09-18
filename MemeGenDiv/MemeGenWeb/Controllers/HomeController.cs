@@ -160,12 +160,10 @@ namespace MemeGenWeb.Controllers
             string file = Path.Combine(assetsPath, originFileName);
             byte[] photoBytes = System.IO.File.ReadAllBytes(file);
 
-
+            // 이미지 변환 메서드 호출
             byte[] outBytes = ImageGenerate(photoBytes);
-
-            //ViewBag.Message = "Your application description page.";
-
-            // Do something with the stream.
+            
+            // 웹 테스트인 경우, 이미지를 파일로 로컬 디렉토리에 저장
             using (var fileStream = System.IO.File.Create(Path.Combine(assetsPath, targetFileName)))
             {
                 fileStream.Write(outBytes, 0, outBytes.Length);
@@ -210,8 +208,7 @@ namespace MemeGenWeb.Controllers
             //    }
             //}
             #endregion
-
-
+            
             using (System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(bitmap))
             using (Font font1 = new Font("Segoe UI", 120, FontStyle.Bold, GraphicsUnit.Pixel))
             {
