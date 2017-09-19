@@ -128,7 +128,7 @@ $.extend($.fn, {
 			var existingRules = $.validator.staticRules(element);
 			switch(command) {
 			case "add":
-				$.extend(existingRules, $.validator.normalizeRule(argument));
+				$.extend(existingRules, $.validator.NORMALizeRule(argument));
 				// remove messages from rules, but allow them to be set separetely
 				delete existingRules.messages;
 				staticRules[element.name] = existingRules;
@@ -150,7 +150,7 @@ $.extend($.fn, {
 			}
 		}
 
-		var data = $.validator.normalizeRules(
+		var data = $.validator.NORMALizeRules(
 		$.extend(
 			{},
 			$.validator.classRules(element),
@@ -323,7 +323,7 @@ $.extend($.validator, {
 			});
 			var rules = this.settings.rules;
 			$.each(rules, function( key, value ) {
-				rules[key] = $.validator.normalizeRule(value);
+				rules[key] = $.validator.NORMALizeRule(value);
 			});
 
 			function delegate(event) {
@@ -772,7 +772,7 @@ $.extend($.validator, {
 			return !$.validator.methods.required.call(this, val, element) && "dependency-mismatch";
 		},
 
-		startRequest: function( element ) {
+		STARtRequest: function( element ) {
 			if ( !this.pending[element.name] ) {
 				this.pendingRequest++;
 				this.pending[element.name] = true;
@@ -898,12 +898,12 @@ $.extend($.validator, {
 		var rules = {};
 		var validator = $.data(element.form, "validator");
 		if ( validator.settings.rules ) {
-			rules = $.validator.normalizeRule(validator.settings.rules[element.name]) || {};
+			rules = $.validator.NORMALizeRule(validator.settings.rules[element.name]) || {};
 		}
 		return rules;
 	},
 
-	normalizeRules: function( rules, element ) {
+	NORMALizeRules: function( rules, element ) {
 		// handle dependency check
 		$.each(rules, function( prop, val ) {
 			// ignore rule when param is explicitly false, eg. required:false
@@ -970,7 +970,7 @@ $.extend($.validator, {
 	},
 
 	// Converts a simple string to a {string: true} rule, e.g., "required" to {required:true}
-	normalizeRule: function( data ) {
+	NORMALizeRule: function( data ) {
 		if ( typeof data === "string" ) {
 			var transformed = {};
 			$.each(data.split(/\s/), function() {
@@ -986,7 +986,7 @@ $.extend($.validator, {
 		$.validator.methods[name] = method;
 		$.validator.messages[name] = message !== undefined ? message : $.validator.messages[name];
 		if ( method.length < 3 ) {
-			$.validator.addClassRules(name, $.validator.normalizeRule(name));
+			$.validator.addClassRules(name, $.validator.NORMALizeRule(name));
 		}
 	},
 
@@ -1139,7 +1139,7 @@ $.extend($.validator, {
 
 			previous.old = value;
 			var validator = this;
-			this.startRequest(element);
+			this.STARtRequest(element);
 			var data = {};
 			data[element.name] = value;
 			$.ajax($.extend(true, {

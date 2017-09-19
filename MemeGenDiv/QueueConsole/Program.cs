@@ -13,48 +13,56 @@ namespace QueueConsole
 {
     class Program
     {
-        static CloudQueue queue;
-
         static void Main(string[] args)
         {
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["StorageConnectionString"]);
             CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
 
             // Retrieve a reference to a container.
-            queue = queueClient.GetQueueReference("meme-queue");
+            CloudQueue queue = queueClient.GetQueueReference("meme-que");
 
             // Create the queue if it doesn't already exist
             queue.CreateIfNotExists();
 
             // Create a message and add it to the queue.
-            var userInfo = new UserInfo()
+            var info = new VisionInfo()
             {
-                ID = "4711",
-                Name = "TY",
-                Title = "bjn"
+                id = "4711",
+                BlobName = "Bill.jpg",
+                BubbleInfo = new BubbleInfo()
+                {
+                    Figure = "Normal",
+                    Filter = "Comic",
+                    Position = "TopLeft",
+                    Text = "Bill Bill"
+                }
             };
 
-            SendMessage(userInfo).Wait();
+            string messageJson = JsonConvert.SerializeObjectAsync(info).Result;
 
-            //Console.ReadKey();
-        }
-
-        private static async Task SendMessage(UserInfo userInfo)
-        {
-            // convert object to json string
-            string messageJson = await JsonConvert.SerializeObjectAsync(userInfo);
-            
             // send message to queue
             var message = new CloudQueueMessage(messageJson);
-            await queue.AddMessageAsync(message);
+            queue.AddMessageAsync(message).Wait();
+
+            Console.WriteLine(messageJson);
+
+            Console.ReadKey();
         }
+
     }
 
-    public class UserInfo
+    public class VisionInfo
     {
-        public string ID { get; set; }
-        public string Name { get; set; }
+        public string id { get; set; }
+        public string BlobName { get; set; }
+        public BubbleInfo BubbleInfo { get; set; }
+    }
 
-        public string Title { get; set; }
+    public class BubbleInfo
+    {
+        public string Figure { get; set; }
+        public string Position { get; set; }
+        public string Filter { get; set; }
+        public string Text { get; set; }
     }
 }

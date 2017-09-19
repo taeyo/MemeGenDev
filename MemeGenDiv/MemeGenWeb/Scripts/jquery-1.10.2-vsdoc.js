@@ -62,7 +62,7 @@ jQuery.Animation = function Animation( elem, properties, options ) {
 				return false;
 			}
 			var currentTime = fxNow || createFxNow(),
-				remaining = Math.max( 0, animation.startTime + animation.duration - currentTime ),
+				remaining = Math.max( 0, animation.STARtTime + animation.duration - currentTime ),
 				// archaic crash bug won't allow us to use 1 - ( 0.5 || 0 ) (#12497)
 				temp = remaining / animation.duration || 0,
 				percent = 1 - temp,
@@ -88,7 +88,7 @@ jQuery.Animation = function Animation( elem, properties, options ) {
 			opts: jQuery.extend( true, { specialEasing: {} }, options ),
 			originalProperties: properties,
 			originalOptions: options,
-			startTime: fxNow || createFxNow(),
+			STARtTime: fxNow || createFxNow(),
 			duration: options.duration,
 			tweens: [],
 			createTween: function( prop, end ) {
@@ -133,8 +133,8 @@ jQuery.Animation = function Animation( elem, properties, options ) {
 
 	jQuery.map( props, createTween, animation );
 
-	if ( jQuery.isFunction( animation.opts.start ) ) {
-		animation.opts.start.call( elem, animation );
+	if ( jQuery.isFunction( animation.opts.STARt ) ) {
+		animation.opts.STARt.call( elem, animation );
 	}
 
 	jQuery.fx.timer(
@@ -177,7 +177,7 @@ jQuery.Callbacks = function( options ) {
 		// Index of currently firing callback (modified by remove if needed)
 		firingIndex,
 		// First callback to fire (used internally by add and fireWith)
-		firingStart,
+		firingSTARt,
 		// Actual callback list
 		list = [],
 		// Stack of fire calls for repeatable lists
@@ -186,8 +186,8 @@ jQuery.Callbacks = function( options ) {
 		fire = function( data ) {
 			memory = options.memory && data;
 			fired = true;
-			firingIndex = firingStart || 0;
-			firingStart = 0;
+			firingIndex = firingSTARt || 0;
+			firingSTARt = 0;
 			firingLength = list.length;
 			firing = true;
 			for ( ; list && firingIndex < firingLength; firingIndex++ ) {
@@ -215,7 +215,7 @@ jQuery.Callbacks = function( options ) {
 			add: function() {
 				if ( list ) {
 					// First, we save the current length
-					var start = list.length;
+					var STARt = list.length;
 					(function add( args ) {
 						jQuery.each( args, function( _, arg ) {
 							var type = jQuery.type( arg );
@@ -236,7 +236,7 @@ jQuery.Callbacks = function( options ) {
 					// With memory, if we're not firing then
 					// we should call right away
 					} else if ( memory ) {
-						firingStart = start;
+						firingSTARt = STARt;
 						fire( memory );
 					}
 				}
@@ -713,7 +713,7 @@ jQuery.ajax = function( url, options ) {
 
 		// Watch for a new set of requests
 		if ( fireGlobals && jQuery.active++ === 0 ) {
-			jQuery.event.trigger("ajaxStart");
+			jQuery.event.trigger("ajaxSTARt");
 		}
 
 		// Uppercase the type
@@ -895,7 +895,7 @@ jQuery.ajax = function( url, options ) {
 				}
 			} else {
 				// We extract error from statusText
-				// then normalize statusText and status for non-aborts
+				// then NORMALize statusText and status for non-aborts
 				error = statusText;
 				if ( status || !statusText ) {
 					statusText = "error";
@@ -1074,7 +1074,7 @@ jQuery.attr = function( elem, name, value ) {
 		} else {
 			ret = jQuery.find.attr( elem, name );
 
-			// Non-existent attributes return null, we normalize to undefined
+			// Non-existent attributes return null, we NORMALize to undefined
 			return ret == null ?
 				undefined :
 				ret;
@@ -1361,9 +1361,9 @@ jQuery.css = function( elem, name, extra, styles ) {
 			val = curCSS( elem, name, styles );
 		}
 
-		//convert "normal" to computed value
-		if ( val === "normal" && name in cssNormalTransform ) {
-			val = cssNormalTransform[ name ];
+		//convert "NORMAL" to computed value
+		if ( val === "NORMAL" && name in cssNORMALTransform ) {
+			val = cssNORMALTransform[ name ];
 		}
 
 		// Return, converting to number if forced or a qualifier was provided and val looks numeric
@@ -1427,7 +1427,7 @@ jQuery.dequeue = function( elem, type ) {
 		type = type || "fx";
 
 		var queue = jQuery.queue( elem, type ),
-			startLength = queue.length,
+			STARtLength = queue.length,
 			fn = queue.shift(),
 			hooks = jQuery._queueHooks( elem, type ),
 			next = function() {
@@ -1437,7 +1437,7 @@ jQuery.dequeue = function( elem, type ) {
 		// If the fx queue is dequeued, always remove the progress sentinel
 		if ( fn === "inprogress" ) {
 			fn = queue.shift();
-			startLength--;
+			STARtLength--;
 		}
 
 		hooks.cur = fn;
@@ -1454,7 +1454,7 @@ jQuery.dequeue = function( elem, type ) {
 			fn.call( elem, next, hooks );
 		}
 
-		if ( !startLength && hooks ) {
+		if ( !STARtLength && hooks ) {
 			hooks.empty.fire();
 		}
 	};
@@ -1774,7 +1774,7 @@ jQuery.fx = function( elem, options, prop, end, easing, unit ) {
 		this.prop = prop;
 		this.easing = easing || "swing";
 		this.options = options;
-		this.start = this.now = this.cur();
+		this.STARt = this.now = this.cur();
 		this.end = end;
 		this.unit = unit || ( jQuery.cssNumber[ prop ] ? "" : "px" );
 	};
@@ -2502,7 +2502,7 @@ jQuery.ready = function( wait ) {
 		// Remember that the DOM is ready
 		jQuery.isReady = true;
 
-		// If a normal DOM Ready event fired, decrement, and wait if need be
+		// If a NORMAL DOM Ready event fired, decrement, and wait if need be
 		if ( wait !== true && --jQuery.readyWait > 0 ) {
 			return;
 		}
@@ -2591,7 +2591,7 @@ jQuery.speed = function( speed, easing, fn ) {
 	opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
 		opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
 
-	// normalize opt.queue - true/undefined/null -> "fx"
+	// NORMALize opt.queue - true/undefined/null -> "fx"
 	if ( opt.queue == null || opt.queue === true ) {
 		opt.queue = "fx";
 	}
@@ -2681,7 +2681,7 @@ jQuery.support = { "getSetAttribute": true,
 "tbody": true,
 "htmlSerialize": true,
 "style": true,
-"hrefNormalized": true,
+"hrefNORMALized": true,
 "opacity": true,
 "cssFloat": true,
 "checkOn": true,
@@ -3090,7 +3090,7 @@ jQuery.prototype.ajaxSend = function( fn ){
 
 		return this.on( type, fn );
 	};
-jQuery.prototype.ajaxStart = function( fn ){
+jQuery.prototype.ajaxSTARt = function( fn ){
 /// <summary>
 ///     Register a handler to be called when the first Ajax request begins. This is an Ajax Event.
 /// </summary>
@@ -4382,7 +4382,7 @@ jQuery.prototype.init = function( selector, context, rootjQuery ) {
 		// Handle HTML strings
 		if ( typeof selector === "string" ) {
 			if ( selector.charAt(0) === "<" && selector.charAt( selector.length - 1 ) === ">" && selector.length >= 3 ) {
-				// Assume that strings that start and end with <> are HTML and skip the regex check
+				// Assume that strings that STARt and end with <> are HTML and skip the regex check
 				match = [ null, selector, null ];
 
 			} else {
@@ -6291,7 +6291,7 @@ jQuery.prototype.stop = function( type, clearQueue, gotoEnd ) {
 				}
 			}
 
-			// start the next in the queue if the last step wasn't forced
+			// STARt the next in the queue if the last step wasn't forced
 			// timers currently will call their complete callbacks, which will dequeue
 			// but only if they were gotoEnd
 			if ( dequeue || !gotoEnd ) {
@@ -6593,7 +6593,7 @@ jQuery.prototype.val = function( value ) {
 
 			hooks = jQuery.valHooks[ this.type ] || jQuery.valHooks[ this.nodeName.toLowerCase() ];
 
-			// If set returns undefined, fall back to normal setting
+			// If set returns undefined, fall back to NORMAL setting
 			if ( !hooks || !("set" in hooks) || hooks.set( this, val, "value" ) === undefined ) {
 				this.value = val;
 			}

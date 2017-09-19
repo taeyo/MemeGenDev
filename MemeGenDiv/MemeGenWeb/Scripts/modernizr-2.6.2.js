@@ -451,7 +451,7 @@ window.Modernizr = (function( window, document, undefined ) {
     tests['touch'] = function() {
         var bool;
 
-        if(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
+        if(('ontouchSTARt' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
           bool = true;
         } else {
           injectElementWithStyles(['@media (',prefixes.join('touch-enabled),('),mod,')','{#modernizr{top:9px;position:absolute}}'].join(''), function( node ) {
@@ -514,7 +514,7 @@ window.Modernizr = (function( window, document, undefined ) {
 
     tests['draganddrop'] = function() {
         var div = document.createElement('div');
-        return ('draggable' in div) || ('ondragstart' in div && 'ondrop' in div);
+        return ('draggable' in div) || ('ondragSTARt' in div && 'ondrop' in div);
     };
 
     // FF3.6 was EOL'ed on 4/24/12, but the ESR version of FF10
@@ -770,7 +770,7 @@ window.Modernizr = (function( window, document, undefined ) {
 
     // In FF4, if disabled, window.localStorage should === null.
 
-    // Normally, we could not test that directly and need to do a
+    // NORMALly, we could not test that directly and need to do a
     //   `('localStorage' in window) && ` test first because otherwise Firefox will
     //   throw bugzil.la/365772 if cookies are disabled
 
@@ -1320,7 +1320,7 @@ window.Modernizr = (function( window, document, undefined ) {
 
     /*>>hasevent*/
     // Modernizr.hasEvent() detects support for a given event, with an optional element to test on
-    // Modernizr.hasEvent('gesturestart', elem)
+    // Modernizr.hasEvent('gestureSTARt', elem)
     Modernizr.hasEvent      = isEventSupported;
     /*>>hasevent*/
 

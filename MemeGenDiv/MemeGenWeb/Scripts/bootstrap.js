@@ -535,9 +535,9 @@ if (!jQuery) { throw new Error("Bootstrap requires jQuery") }
   Collapse.prototype.show = function () {
     if (this.transitioning || this.$element.hasClass('in')) return
 
-    var startEvent = $.Event('show.bs.collapse')
-    this.$element.trigger(startEvent)
-    if (startEvent.isDefaultPrevented()) return
+    var STARtEvent = $.Event('show.bs.collapse')
+    this.$element.trigger(STARtEvent)
+    if (STARtEvent.isDefaultPrevented()) return
 
     var actives = this.$parent && this.$parent.find('> .panel > .in')
 
@@ -579,9 +579,9 @@ if (!jQuery) { throw new Error("Bootstrap requires jQuery") }
   Collapse.prototype.hide = function () {
     if (this.transitioning || !this.$element.hasClass('in')) return
 
-    var startEvent = $.Event('hide.bs.collapse')
-    this.$element.trigger(startEvent)
-    if (startEvent.isDefaultPrevented()) return
+    var STARtEvent = $.Event('hide.bs.collapse')
+    this.$element.trigger(STARtEvent)
+    if (STARtEvent.isDefaultPrevented()) return
 
     var dimension = this.dimension()
 
@@ -711,7 +711,7 @@ if (!jQuery) { throw new Error("Bootstrap requires jQuery") }
     clearMenus()
 
     if (!isActive) {
-      if ('ontouchstart' in document.documentElement && !$parent.closest('.navbar-nav').length) {
+      if ('ontouchSTARt' in document.documentElement && !$parent.closest('.navbar-nav').length) {
         // if mobile we we use a backdrop because click events don't delegate
         $('<div class="dropdown-backdrop"/>').insertAfter($(this)).on('click', clearMenus)
       }

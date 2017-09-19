@@ -74,7 +74,7 @@ var
 
 	// A simple way to check for HTML strings
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
-	// Strict HTML recognition (#11290: must start with <)
+	// Strict HTML recognition (#11290: must STARt with <)
 	rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/,
 
 	// Match a standalone tag
@@ -132,7 +132,7 @@ jQuery.fn = jQuery.prototype = {
 		// Handle HTML strings
 		if ( typeof selector === "string" ) {
 			if ( selector.charAt(0) === "<" && selector.charAt( selector.length - 1 ) === ">" && selector.length >= 3 ) {
-				// Assume that strings that start and end with <> are HTML and skip the regex check
+				// Assume that strings that STARt and end with <> are HTML and skip the regex check
 				match = [ null, selector, null ];
 
 			} else {
@@ -222,7 +222,7 @@ jQuery.fn = jQuery.prototype = {
 		return jQuery.makeArray( selector, this );
 	},
 
-	// Start with an empty selector
+	// STARt with an empty selector
 	selector: "",
 
 	// The default length of a jQuery object is 0
@@ -424,7 +424,7 @@ jQuery.extend({
 		// Remember that the DOM is ready
 		jQuery.isReady = true;
 
-		// If a normal DOM Ready event fired, decrement, and wait if need be
+		// If a NORMAL DOM Ready event fired, decrement, and wait if need be
 		if ( wait !== true && --jQuery.readyWait > 0 ) {
 			return;
 		}
@@ -2067,7 +2067,7 @@ Expr = Sizzle.selectors = {
 				} :
 
 				function( elem, context, xml ) {
-					var cache, outerCache, node, diff, nodeIndex, start,
+					var cache, outerCache, node, diff, nodeIndex, STARt,
 						dir = simple !== forward ? "nextSibling" : "previousSibling",
 						parent = elem.parentNode,
 						name = ofType && elem.nodeName.toLowerCase(),
@@ -2085,12 +2085,12 @@ Expr = Sizzle.selectors = {
 									}
 								}
 								// Reverse direction for :only-* (if we haven't yet done so)
-								start = dir = type === "only" && !start && "nextSibling";
+								STARt = dir = type === "only" && !STARt && "nextSibling";
 							}
 							return true;
 						}
 
-						start = [ forward ? parent.firstChild : parent.lastChild ];
+						STARt = [ forward ? parent.firstChild : parent.lastChild ];
 
 						// non-xml :nth-child(...) stores cache data on `parent`
 						if ( forward && useCache ) {
@@ -2103,8 +2103,8 @@ Expr = Sizzle.selectors = {
 
 							while ( (node = ++nodeIndex && node && node[ dir ] ||
 
-								// Fallback to seeking `elem` from the start
-								(diff = nodeIndex = 0) || start.pop()) ) {
+								// Fallback to seeking `elem` from the STARt
+								(diff = nodeIndex = 0) || STARt.pop()) ) {
 
 								// When found, cache indexes on `parent` and break
 								if ( node.nodeType === 1 && ++diff && node === elem ) {
@@ -2119,9 +2119,9 @@ Expr = Sizzle.selectors = {
 
 						// xml :nth-child(...) or :nth-last-child(...) or :nth(-last)?-of-type(...)
 						} else {
-							// Use the same loop as above to seek `elem` from the start
+							// Use the same loop as above to seek `elem` from the STARt
 							while ( (node = ++nodeIndex && node && node[ dir ] ||
-								(diff = nodeIndex = 0) || start.pop()) ) {
+								(diff = nodeIndex = 0) || STARt.pop()) ) {
 
 								if ( ( ofType ? node.nodeName.toLowerCase() === name : node.nodeType === 1 ) && ++diff ) {
 									// Cache the index of each encountered element
@@ -2297,7 +2297,7 @@ Expr = Sizzle.selectors = {
 			// :empty is only affected by element nodes and content nodes(including text(3), cdata(4)),
 			//   not comment, processing instructions, or others
 			// Thanks to Diego Perini for the nodeName shortcut
-			//   Greater than "@" means alpha characters (specifically not starting with "#" or "?")
+			//   Greater than "@" means alpha characters (specifically not STARting with "#" or "?")
 			for ( elem = elem.firstChild; elem; elem = elem.nextSibling ) {
 				if ( elem.nodeName > "@" || elem.nodeType === 3 || elem.nodeType === 4 ) {
 					return false;
@@ -3031,7 +3031,7 @@ jQuery.Callbacks = function( options ) {
 		// Index of currently firing callback (modified by remove if needed)
 		firingIndex,
 		// First callback to fire (used internally by add and fireWith)
-		firingStart,
+		firingSTARt,
 		// Actual callback list
 		list = [],
 		// Stack of fire calls for repeatable lists
@@ -3040,8 +3040,8 @@ jQuery.Callbacks = function( options ) {
 		fire = function( data ) {
 			memory = options.memory && data;
 			fired = true;
-			firingIndex = firingStart || 0;
-			firingStart = 0;
+			firingIndex = firingSTARt || 0;
+			firingSTARt = 0;
 			firingLength = list.length;
 			firing = true;
 			for ( ; list && firingIndex < firingLength; firingIndex++ ) {
@@ -3069,7 +3069,7 @@ jQuery.Callbacks = function( options ) {
 			add: function() {
 				if ( list ) {
 					// First, we save the current length
-					var start = list.length;
+					var STARt = list.length;
 					(function add( args ) {
 						jQuery.each( args, function( _, arg ) {
 							var type = jQuery.type( arg );
@@ -3090,7 +3090,7 @@ jQuery.Callbacks = function( options ) {
 					// With memory, if we're not firing then
 					// we should call right away
 					} else if ( memory ) {
-						firingStart = start;
+						firingSTARt = STARt;
 						fire( memory );
 					}
 				}
@@ -3358,8 +3358,8 @@ jQuery.support = (function( support ) {
 	support.style = /top/.test( a.getAttribute("style") );
 
 	// Make sure that URLs aren't manipulated
-	// (IE normalizes it by default)
-	support.hrefNormalized = a.getAttribute("href") === "/a";
+	// (IE NORMALizes it by default)
+	support.hrefNORMALized = a.getAttribute("href") === "/a";
 
 	// Make sure that element opacity exists
 	// (IE uses filter instead)
@@ -3922,7 +3922,7 @@ jQuery.extend({
 		type = type || "fx";
 
 		var queue = jQuery.queue( elem, type ),
-			startLength = queue.length,
+			STARtLength = queue.length,
 			fn = queue.shift(),
 			hooks = jQuery._queueHooks( elem, type ),
 			next = function() {
@@ -3932,7 +3932,7 @@ jQuery.extend({
 		// If the fx queue is dequeued, always remove the progress sentinel
 		if ( fn === "inprogress" ) {
 			fn = queue.shift();
-			startLength--;
+			STARtLength--;
 		}
 
 		if ( fn ) {
@@ -3948,7 +3948,7 @@ jQuery.extend({
 			fn.call( elem, next, hooks );
 		}
 
-		if ( !startLength && hooks ) {
+		if ( !STARtLength && hooks ) {
 			hooks.empty.fire();
 		}
 	},
@@ -4267,7 +4267,7 @@ jQuery.fn.extend({
 
 			hooks = jQuery.valHooks[ this.type ] || jQuery.valHooks[ this.nodeName.toLowerCase() ];
 
-			// If set returns undefined, fall back to normal setting
+			// If set returns undefined, fall back to NORMAL setting
 			if ( !hooks || !("set" in hooks) || hooks.set( this, val, "value" ) === undefined ) {
 				this.value = val;
 			}
@@ -4387,7 +4387,7 @@ jQuery.extend({
 		} else {
 			ret = jQuery.find.attr( elem, name );
 
-			// Non-existent attributes return null, we normalize to undefined
+			// Non-existent attributes return null, we NORMALize to undefined
 			return ret == null ?
 				undefined :
 				ret;
@@ -4621,8 +4621,8 @@ if ( !getSetAttribute ) {
 
 // Some attributes require a special call on IE
 // http://msdn.microsoft.com/en-us/library/ms536429%28VS.85%29.aspx
-if ( !jQuery.support.hrefNormalized ) {
-	// href/src property should get the full normalized URL (#10299/#12915)
+if ( !jQuery.support.hrefNORMALized ) {
+	// href/src property should get the full NORMALized URL (#10299/#12915)
 	jQuery.each([ "href", "src" ], function( i, name ) {
 		jQuery.propHooks[ name ] = {
 			get: function( elem ) {
@@ -5166,7 +5166,7 @@ jQuery.event = {
 			return event;
 		}
 
-		// Create a writable copy of the event object and normalize some properties
+		// Create a writable copy of the event object and NORMALize some properties
 		var i, prop, copy,
 			type = event.type,
 			originalEvent = event,
@@ -5248,7 +5248,7 @@ jQuery.event = {
 			}
 
 			// Add which for click: 1 === left; 2 === middle; 3 === right
-			// Note: button is not normalized, so don't use it
+			// Note: button is not NORMALized, so don't use it
 			if ( !event.which && button !== undefined ) {
 				event.which = ( button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ) );
 			}
@@ -5701,7 +5701,7 @@ jQuery.fn.extend({
 var isSimple = /^.[^:#\[\.,]*$/,
 	rparentsprev = /^(?:parents|prev(?:Until|All))/,
 	rneedsContext = jQuery.expr.match.needsContext,
-	// methods guaranteed to produce a unique set when starting from a unique set
+	// methods guaranteed to produce a unique set when STARting from a unique set
 	guaranteedUnique = {
 		children: true,
 		contents: true,
@@ -6795,7 +6795,7 @@ var iframe, getStyles, curCSS,
 	ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity\s*=\s*([^)]*)/,
 	rposition = /^(top|right|bottom|left)$/,
-	// swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
+	// swappable if display is none or STARts with table except "table", "table-cell", or "table-caption"
 	// see here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
 	rmargin = /^margin/,
@@ -6805,7 +6805,7 @@ var iframe, getStyles, curCSS,
 	elemdisplay = { BODY: "block" },
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
-	cssNormalTransform = {
+	cssNORMALTransform = {
 		letterSpacing: 0,
 		fontWeight: 400
 	},
@@ -6973,7 +6973,7 @@ jQuery.extend({
 	// Add in properties whose names you wish to fix before
 	// setting or getting the value
 	cssProps: {
-		// normalize float css property
+		// NORMALize float css property
 		"float": jQuery.support.cssFloat ? "cssFloat" : "styleFloat"
 	},
 
@@ -7064,9 +7064,9 @@ jQuery.extend({
 			val = curCSS( elem, name, styles );
 		}
 
-		//convert "normal" to computed value
-		if ( val === "normal" && name in cssNormalTransform ) {
-			val = cssNormalTransform[ name ];
+		//convert "NORMAL" to computed value
+		if ( val === "NORMAL" && name in cssNORMALTransform ) {
+			val = cssNORMALTransform[ name ];
 		}
 
 		// Return, converting to number if forced or a qualifier was provided and val looks numeric
@@ -7221,7 +7221,7 @@ function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
 
 function getWidthOrHeight( elem, name, extra ) {
 
-	// Start with offset property, which is equivalent to the border-box value
+	// STARt with offset property, which is equivalent to the border-box value
 	var valueIsBorderBox = true,
 		val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
 		styles = getStyles( elem ),
@@ -7246,7 +7246,7 @@ function getWidthOrHeight( elem, name, extra ) {
 		// for getComputedStyle silently falls back to the reliable elem.style
 		valueIsBorderBox = isBorderBox && ( jQuery.support.boxSizingReliable || val === elem.style[ name ] );
 
-		// Normalize "", auto, and prepare for extra
+		// NORMALize "", auto, and prepare for extra
 		val = parseFloat( val ) || 0;
 	}
 
@@ -7609,14 +7609,14 @@ var
 	 *    - AFTER param serialization (s.data is a string if s.processData is true)
 	 * 3) key is the dataType
 	 * 4) the catchall symbol "*" can be used
-	 * 5) execution will start with transport dataType and THEN continue down to "*" if needed
+	 * 5) execution will STARt with transport dataType and THEN continue down to "*" if needed
 	 */
 	prefilters = {},
 
 	/* Transports bindings
 	 * 1) key is the dataType
 	 * 2) the catchall symbol "*" can be used
-	 * 3) selection will start with transport dataType and THEN go to "*" if needed
+	 * 3) selection will STARt with transport dataType and THEN go to "*" if needed
 	 */
 	transports = {},
 
@@ -7772,7 +7772,7 @@ jQuery.fn.load = function( url, params, callback ) {
 };
 
 // Attach a bunch of functions for handling common AJAX events
-jQuery.each( [ "ajaxStart", "ajaxStop", "ajaxComplete", "ajaxError", "ajaxSuccess", "ajaxSend" ], function( i, type ){
+jQuery.each( [ "ajaxSTARt", "ajaxStop", "ajaxComplete", "ajaxError", "ajaxSuccess", "ajaxSend" ], function( i, type ){
 	jQuery.fn[ type ] = function( fn ){
 		return this.on( type, fn );
 	};
@@ -8034,7 +8034,7 @@ jQuery.extend({
 
 		// Watch for a new set of requests
 		if ( fireGlobals && jQuery.active++ === 0 ) {
-			jQuery.event.trigger("ajaxStart");
+			jQuery.event.trigger("ajaxSTARt");
 		}
 
 		// Uppercase the type
@@ -8216,7 +8216,7 @@ jQuery.extend({
 				}
 			} else {
 				// We extract error from statusText
-				// then normalize statusText and status for non-aborts
+				// then NORMALize statusText and status for non-aborts
 				error = statusText;
 				if ( status || !statusText ) {
 					statusText = "error";
@@ -8537,7 +8537,7 @@ jQuery.ajaxSetup({
 	}
 });
 
-// Detect, normalize options and install callbacks for jsonp requests
+// Detect, NORMALize options and install callbacks for jsonp requests
 jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 
 	var callbackName, overwritten, responseContainer,
@@ -8750,7 +8750,7 @@ if ( xhrSupported ) {
 									try {
 										statusText = xhr.statusText;
 									} catch( e ) {
-										// We normalize with Webkit giving an empty statusText
+										// We NORMALize with Webkit giving an empty statusText
 										statusText = "";
 									}
 
@@ -8823,21 +8823,21 @@ var fxNow, timerId,
 				parts = rfxnum.exec( value ),
 				unit = parts && parts[ 3 ] || ( jQuery.cssNumber[ prop ] ? "" : "px" ),
 
-				// Starting value computation is required for potential unit mismatches
-				start = ( jQuery.cssNumber[ prop ] || unit !== "px" && +target ) &&
+				// STARting value computation is required for potential unit mismatches
+				STARt = ( jQuery.cssNumber[ prop ] || unit !== "px" && +target ) &&
 					rfxnum.exec( jQuery.css( tween.elem, prop ) ),
 				scale = 1,
 				maxIterations = 20;
 
-			if ( start && start[ 3 ] !== unit ) {
+			if ( STARt && STARt[ 3 ] !== unit ) {
 				// Trust units reported by jQuery.css
-				unit = unit || start[ 3 ];
+				unit = unit || STARt[ 3 ];
 
 				// Make sure we update the tween properties later on
 				parts = parts || [];
 
-				// Iteratively approximate from a nonzero starting point
-				start = +target || 1;
+				// Iteratively approximate from a nonzero STARting point
+				STARt = +target || 1;
 
 				do {
 					// If previous iteration zeroed out, double until we get *something*
@@ -8845,8 +8845,8 @@ var fxNow, timerId,
 					scale = scale || ".5";
 
 					// Adjust and apply
-					start = start / scale;
-					jQuery.style( tween.elem, prop, start + unit );
+					STARt = STARt / scale;
+					jQuery.style( tween.elem, prop, STARt + unit );
 
 				// Update scale, tolerating zero or NaN from tween.cur()
 				// And breaking the loop if scale is unchanged or perfect, or if we've just had enough
@@ -8855,11 +8855,11 @@ var fxNow, timerId,
 
 			// Update tween properties
 			if ( parts ) {
-				start = tween.start = +start || +target || 0;
+				STARt = tween.STARt = +STARt || +target || 0;
 				tween.unit = unit;
 				// If a +=/-= token was provided, we're doing a relative animation
 				tween.end = parts[ 1 ] ?
-					start + ( parts[ 1 ] + 1 ) * parts[ 2 ] :
+					STARt + ( parts[ 1 ] + 1 ) * parts[ 2 ] :
 					+parts[ 2 ];
 			}
 
@@ -8903,7 +8903,7 @@ function Animation( elem, properties, options ) {
 				return false;
 			}
 			var currentTime = fxNow || createFxNow(),
-				remaining = Math.max( 0, animation.startTime + animation.duration - currentTime ),
+				remaining = Math.max( 0, animation.STARtTime + animation.duration - currentTime ),
 				// archaic crash bug won't allow us to use 1 - ( 0.5 || 0 ) (#12497)
 				temp = remaining / animation.duration || 0,
 				percent = 1 - temp,
@@ -8929,7 +8929,7 @@ function Animation( elem, properties, options ) {
 			opts: jQuery.extend( true, { specialEasing: {} }, options ),
 			originalProperties: properties,
 			originalOptions: options,
-			startTime: fxNow || createFxNow(),
+			STARtTime: fxNow || createFxNow(),
 			duration: options.duration,
 			tweens: [],
 			createTween: function( prop, end ) {
@@ -8974,8 +8974,8 @@ function Animation( elem, properties, options ) {
 
 	jQuery.map( props, createTween, animation );
 
-	if ( jQuery.isFunction( animation.opts.start ) ) {
-		animation.opts.start.call( elem, animation );
+	if ( jQuery.isFunction( animation.opts.STARt ) ) {
+		animation.opts.STARt.call( elem, animation );
 	}
 
 	jQuery.fx.timer(
@@ -9175,10 +9175,10 @@ function defaultPrefilter( elem, props, opts ) {
 			tween = createTween( hidden ? dataShow[ prop ] : 0, prop, anim );
 
 			if ( !( prop in dataShow ) ) {
-				dataShow[ prop ] = tween.start;
+				dataShow[ prop ] = tween.STARt;
 				if ( hidden ) {
-					tween.end = tween.start;
-					tween.start = prop === "width" || prop === "height" ? 1 : 0;
+					tween.end = tween.STARt;
+					tween.STARt = prop === "width" || prop === "height" ? 1 : 0;
 				}
 			}
 		}
@@ -9197,7 +9197,7 @@ Tween.prototype = {
 		this.prop = prop;
 		this.easing = easing || "swing";
 		this.options = options;
-		this.start = this.now = this.cur();
+		this.STARt = this.now = this.cur();
 		this.end = end;
 		this.unit = unit || ( jQuery.cssNumber[ prop ] ? "" : "px" );
 	},
@@ -9219,7 +9219,7 @@ Tween.prototype = {
 		} else {
 			this.pos = eased = percent;
 		}
-		this.now = ( this.end - this.start ) * eased + this.start;
+		this.now = ( this.end - this.STARt ) * eased + this.STARt;
 
 		if ( this.options.step ) {
 			this.options.step.call( this.elem, this.now, this );
@@ -9357,7 +9357,7 @@ jQuery.fn.extend({
 				}
 			}
 
-			// start the next in the queue if the last step wasn't forced
+			// STARt the next in the queue if the last step wasn't forced
 			// timers currently will call their complete callbacks, which will dequeue
 			// but only if they were gotoEnd
 			if ( dequeue || !gotoEnd ) {
@@ -9454,7 +9454,7 @@ jQuery.speed = function( speed, easing, fn ) {
 	opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
 		opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
 
-	// normalize opt.queue - true/undefined/null -> "fx"
+	// NORMALize opt.queue - true/undefined/null -> "fx"
 	if ( opt.queue == null || opt.queue === true ) {
 		opt.queue = "fx";
 	}
@@ -9509,13 +9509,13 @@ jQuery.fx.tick = function() {
 
 jQuery.fx.timer = function( timer ) {
 	if ( timer() && jQuery.timers.push( timer ) ) {
-		jQuery.fx.start();
+		jQuery.fx.STARt();
 	}
 };
 
 jQuery.fx.interval = 13;
 
-jQuery.fx.start = function() {
+jQuery.fx.STARt = function() {
 	if ( !timerId ) {
 		timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
 	}
@@ -9778,7 +9778,7 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
 	// files that may use define, but not via a proper concatenation script that
 	// understands anonymous AMD modules. A named AMD is safest and most robust
 	// way to register. Lowercase jquery is used because AMD module names are
-	// derived from file names, and jQuery is normally delivered in a lowercase
+	// derived from file names, and jQuery is NORMALly delivered in a lowercase
 	// file name. Do this after creating the global so that if an AMD module wants
 	// to call noConflict to hide this version of jQuery, it will work.
 	if ( typeof define === "function" && define.amd ) {
